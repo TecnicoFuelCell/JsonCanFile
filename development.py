@@ -26,7 +26,7 @@ typedef struct pedal_voltage {{
 
 }} pedal_voltage;
 
-#endif // JSONSTRUCTS_H
+#endif // DEVELOPMENT_H
 """
 
     # Load the JSON data
