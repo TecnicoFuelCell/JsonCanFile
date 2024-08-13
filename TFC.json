@@ -1,0 +1,251 @@
+{
+    "modules": {
+        "PedalCAN": {
+            "messages": {
+                "pedal_voltage": {
+                    "name": "tensão do pedal",
+                    "id": 1,
+                    "prio": 1,
+                    "signals": {
+                        "pedal_voltage": {
+                            "start": 0,
+                            "length": 12,
+                            "scale": 0.01,
+                            "offset": 0.0,
+                            "unit": "V",
+                            "comment": "Voltage from the pedal sensor (0.00 to ? V)",
+                            "min_value": 0.0,      //0  
+                            "max_value": 20,        //3.3
+                            "type": "unsigned",             //centesimas
+                            "byte_order": "little_endian"
+                        }
+                    }
+                }
+            }
+        },
+        "VescCAN": {
+            "messages": {
+                "vesc_data": {
+                    "name": "vesc_data",
+                    "id": 2,
+                    "prio":1,
+                    "signals": {
+                        "input_voltage": {
+                            "start": 0,
+                            "length": 16,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "V",
+                            "comment": "Input voltage to the VESC",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "current_motor": {
+                            "start": 16,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "A",
+                            "comment": "Current drawn by the motor",
+                            "type": "signed",
+                            "byte_order": "little_endian"
+                        },
+                        "current_in": {
+                            "start": 32,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "A",
+                            "comment": "Input current to the VESC",
+                            "type": "signed",
+                            "byte_order": "little_endian"
+                        },
+                        "duty_cycle": {
+                            "start": 48,
+                            "length": 16,
+                            "scale": 0.001,
+                            "offset": 0.0,
+                            "unit": "%",
+                            "comment": "Motor duty cycle",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "watt_hours_used": {
+                            "start": 64,
+                            "length": 32,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "Wh",
+                            "comment": "Total watt-hours used",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        // "fault_code": {
+                        //     "start": 96,
+                        //     "length": 8,
+                        //     "scale": 1.0,
+                        //     "offset": 0.0,
+                        //     "unit": "",
+                        //     "comment": "Error code from the VESC",
+                        //     "type": "unsigned",
+                        //     "byte_order": "little_endian"
+                        // },
+                        "ms_today_setup": {
+                            "start": 112,
+                            "length": 32,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "ms",
+                            "comment": "Milliseconds since today's setup",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "speed_meters_per_sec": {
+                            "start": 144,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "m/s",
+                            "comment": "Speed in meters per second",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        }
+                    }
+                }
+            }
+        },
+        "FlowMeterCAN": {
+            "messages": {
+                "flow_meter_data": {
+                    "name": "flow_meter_data",
+                    "id": 3,
+                    "prio":1,
+                    "signals": {
+                        "unknown_signal": {
+                            "start": 0,
+                            "length": 32,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "",
+                            "comment": "Unknown signal for flow meter",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        }
+                    }
+                }
+            }
+        },
+        "FuelCellCAN": {
+            "messages": {
+                "fuel_cell_data": {
+                    "name": "fuel_cell_data",
+                    "id": 4,
+                    "prio":1,
+                    "signals": {
+                        "ErrorFlag": {
+                            "start": 0,
+                            "length": 8,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "",
+                            "comment": "Fuel cell error flag",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Ambient_T": {
+                            "start": 8,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "°C",
+                            "comment": "Ambient temperature",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Fuelcell_out_V": {
+                            "start": 24,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "V",
+                            "comment": "Fuel cell output voltage",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "H2_leak_V": {
+                            "start": 40,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "V",
+                            "comment": "Hydrogen leak voltage",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Fuelcell_T": {
+                            "start": 56,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "°C",
+                            "comment": "Fuel cell temperature",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Fuelcell_I_high": {
+                            "start": 72,
+                            "length": 8,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "A",
+                            "comment": "Fuel cell current high byte",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Fuelcell_I_low": {
+                            "start": 80,
+                            "length": 8,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "A",
+                            "comment": "Fuel cell current low byte",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        },
+                        "Battery_V_aux": {
+                            "start": 88,
+                            "length": 16,
+                            "scale": 0.1,
+                            "offset": 0.0,
+                            "unit": "V",
+                            "comment": "Auxiliary battery voltage",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        }
+                    }
+                }
+            }
+        },
+        "GpsCAN": {
+            "messages": {
+                "gps_data": {
+                    "name": "gps_data",
+                    "id": 5,
+                    "prio":1,
+                    "signals": {
+                        "unknown_signal": {
+                            "start": 0,
+                            "length": 32,
+                            "scale": 1.0,
+                            "offset": 0.0,
+                            "unit": "",
+                            "comment": "Placeholder for GPS CAN signal",
+                            "type": "unsigned",
+                            "byte_order": "little_endian"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
