@@ -3,8 +3,8 @@ import json
 def convert_json_to_header(json_data):
     header_template = """//CAN System
 
-#ifndef JSONSTRUCTS_H
-#define JSONSTRUCTS_H
+#ifndef DEVELOPMENT_H
+#define DEVELOPMENT_H
 
 #include <stdio.h>
 #include <stdint.h> // uint8_t, uint16_t, uint32_t, etc.
@@ -65,7 +65,7 @@ with open(json_file_path, 'r') as json_file:
 header_content = convert_json_to_header(json_data)
 
 # Write the header file
-header_file_path = 'json_structs.h'
+header_file_path = 'development.h'
 with open(header_file_path, 'w') as header_file:
     header_file.write(header_content)
 
