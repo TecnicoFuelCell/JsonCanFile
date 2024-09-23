@@ -2,7 +2,7 @@
     "modules": {
         "PedalCAN": {
             "messages": {
-                "pedal_voltage": {
+                "pedal_message": {
                     "name": "tensão do pedal",
                     "id": 1,
                     "prio": 1,

@@ -1,7 +1,7 @@
 // CAN System
 
-#ifndef TEST3_H
-#define TEST3_H
+#ifndef MULTIPLESIGNALS_H
+#define MULTIPLESIGNALS_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -47,4 +47,4 @@ typedef struct pedal_msg {
 
 
 
-#endif // TEST3_H
+#endif // MULTIPLESIGNALS_H

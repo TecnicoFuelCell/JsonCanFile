@@ -82,8 +82,8 @@ def json_to_header(json_data):
             # creates the message struct (with all signal structs)
             struct_msg = add_header_struct(module_name, msg_name, msg_content, signals)
             struct_definitions.append(struct_msg)                       
-        header_content = "\n".join(struct_definitions)
-        return header_content
+    header_content = "\n".join(struct_definitions)
+    return header_content
             
 
 def convert_json_to_header(input_json_file, output_header_file):
@@ -112,6 +112,7 @@ def convert_json_to_header(input_json_file, output_header_file):
 
 
 convert_json_to_header('jsonFiles/development.json', 'headerFiles/test.h')
-convert_json_to_header('jsonFiles/cleanTFC.json', 'headerFiles/test2.h')
-convert_json_to_header('jsonFiles/test.json', 'headerFiles/test3.h')
+convert_json_to_header('jsonFiles/cleanTFC.json', 'headerFiles/cleanTFC.h')
+convert_json_to_header('jsonFiles/multipleSignals.json', 'headerFiles/multipleSignals.h')
 convert_json_to_header('jsonFiles/multipleMessages.json', 'headerFiles/multiple_messages.h')
+
