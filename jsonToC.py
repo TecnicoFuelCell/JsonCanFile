@@ -35,6 +35,34 @@ def map_json_type_to_c(json_value):
         return "void*"  # default for unknown -- bit problematic if it reaches here
 
 
+def add_signal_struct(signal_name, signal_content):
+    struct_signal = f"// Signal: {signal_name}\n"
+    struct_signal += f"typedef struct {signal_name} {{\n"
+    
+    for signal_field_name, signal_field_value in signal_content.items():
+        c_type = map_json_type_to_c(signal_field_value)
+        struct_signal += f"    {c_type} {signal_field_name};\n"
+    
+    struct_signal += f"}} {signal_name};\n"
+    return struct_signal
+
+
+def add_header_struct(module_name, msg_name, msg_content, signals):
+    struct_msg = f"// {module_name} Module\n"
+    struct_msg += f"typedef struct {msg_name} {{\n"
+    # adds every field that is not a struct
+    for field_name, field_value in msg_content.items():
+        if field_name != 'signals':
+            c_type = map_json_type_to_c(field_value)
+            struct_msg += f"    {c_type} {field_name};\n"
+    # adds all signal structs to the message struct
+    for signal_name in signals:
+        struct_msg += f"    struct {signal_name} {signal_name};\n"
+    
+    struct_msg += f"}} {msg_name};\n\n"
+    return struct_msg
+
+
 def json_to_header(json_data):
     struct_definitions = []
     data = json.loads(json_data)
@@ -46,37 +74,14 @@ def json_to_header(json_data):
         # -> exists in TFC.json, defaults to module_content if it doesn't exist
         messages = module_content.get('messages', module_content)
         for msg_name, msg_content in messages.items():
-            # TODO refactor this later into addHeaderStructs or something like that
-            struct_msg_name = f"{msg_name}"
-            struct_msg = f"// {module_name}\n"
-            struct_msg += f"typedef struct {struct_msg_name} {{\n"
-            # dynamically adds fields to the struct
-            for field_name, field_value in msg_content.items():
-                if field_name != 'signals':
-                    c_type = map_json_type_to_c(field_value)
-                    struct_msg += f"    {c_type} {field_name};\n"
-            
-            # handles signals data -- TODO refactor later
             signals = check_empty_dict(msg_content, 'signals')
             for signal_name, signal_content in signals.items():
-                struct_signal_name = signal_name
-                struct_signal = f"// Signal: {signal_name}\n"
-                struct_signal += f"typedef struct {struct_signal_name} {{\n"
-                
-                # dynamically adds fields existing in the signals to the struct
-                for signal_field_name, signal_field_value in signal_content.items():
-                    c_type = map_json_type_to_c(signal_field_value)
-                    struct_signal += f"    {c_type} {signal_field_name};\n"
-
-                struct_signal += f"}} {struct_signal_name};\n"
+                # creates a new struct for every signal in "signals"
+                struct_signal = add_signal_struct(signal_name, signal_content)
                 struct_definitions.append(struct_signal)
-                
-                struct_msg += f"    struct {struct_signal_name} {signal_name};\n"
-        
-            struct_msg += f"}} {struct_msg_name};\n\n"
-            struct_definitions.append(struct_msg)
-            
-        print(struct_definitions)
+            # creates the message struct (with all signal structs)
+            struct_msg = add_header_struct(module_name, msg_name, msg_content, signals)
+            struct_definitions.append(struct_msg)                       
         header_content = "\n".join(struct_definitions)
         return header_content
             
@@ -108,3 +113,5 @@ def convert_json_to_header(input_json_file, output_header_file):
 
 convert_json_to_header('jsonFiles/development.json', 'headerFiles/test.h')
 convert_json_to_header('jsonFiles/cleanTFC.json', 'headerFiles/test2.h')
+convert_json_to_header('jsonFiles/test.json', 'headerFiles/test3.h')
+convert_json_to_header('jsonFiles/multipleMessages.json', 'headerFiles/multiple_messages.h')
