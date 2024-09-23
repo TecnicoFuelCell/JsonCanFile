@@ -1,0 +1,43 @@
+{
+    "modules": {
+        "pedal_mod": {
+            "pedal_msg": {
+                "name": "mensagem do pedal",
+                "id": 1,
+                "prio": 1,
+                "dlc": 8,
+                "signals": {
+                    "pedal_voltage": {
+                        "name": "tensão do pedal",
+                        "start": 0,
+                        "length": 9,
+                        "scale": 0.00644,
+                        "offset": 0.0,
+                        "unit": "V",
+                        "comment": "Voltage from the pedal sensor (0.00 to 3.3 V)",
+                        "min_value": 0.0,      
+                        "max_value": 3.3,        
+                        "type": "unsigned",            
+                        "byte_order": "little_endian"
+                    }
+                }
+            },
+            "blabla_msg": {
+                "name":"tensão do pedal",
+                "id": 2, 
+                "prio": 2,
+                "dlc": 9,
+                "signals": {
+                    "signal1": {
+                        "name": "blabla",
+                        "start": 0,
+                        "length": 9,
+                        "scale": 0.44,
+                        "unit": "V",
+                        "comment": "corpus sample text"
+                    }
+                }
+            }
+        }
+    }
+}

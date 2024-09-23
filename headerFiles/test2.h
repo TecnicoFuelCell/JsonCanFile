@@ -19,7 +19,7 @@ typedef struct pedal_voltage {
     char* byte_order;
 } pedal_voltage;
 
-// PedalCAN
+// PedalCAN Module
 typedef struct pedal_voltage {
     char* name;
     uint8_t id;

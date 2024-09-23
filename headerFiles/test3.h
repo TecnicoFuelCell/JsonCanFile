@@ -1,7 +1,7 @@
 // CAN System
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef TEST3_H
+#define TEST3_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -21,6 +21,20 @@ typedef struct pedal_voltage {
     char* byte_order;
 } pedal_voltage;
 
+// Signal: pedal_position
+typedef struct pedal_position {
+    char* name;
+    uint8_t start;
+    uint8_t length;
+    float scale;
+    float offset;
+    char* unit;
+    char* comment;
+    char* blablabla;
+    float min_value;
+    float max_value;
+} pedal_position;
+
 // pedal_mod Module
 typedef struct pedal_msg {
     char* name;
@@ -28,8 +42,9 @@ typedef struct pedal_msg {
     uint8_t prio;
     uint8_t dlc;
     struct pedal_voltage pedal_voltage;
+    struct pedal_position pedal_position;
 } pedal_msg;
 
 
 
-#endif // TEST_H
+#endif // TEST3_H
