@@ -56,14 +56,11 @@ def json_to_header(json_data):
                     c_type = map_json_type_to_c(field_value)
                     struct_msg += f"    {c_type} {field_name};\n"
             
-            struct_msg += f"}} {struct_msg_name};\n\n"
-            struct_definitions.append(struct_msg)
             # handles signals data -- TODO refactor later
             signals = check_empty_dict(msg_content, 'signals')
             for signal_name, signal_content in signals.items():
                 struct_signal_name = signal_name
-
-                struct_signal = f"// {msg_name} SIGNALS\n"
+                struct_signal = f"// Signal: {signal_name}\n"
                 struct_signal += f"typedef struct {struct_signal_name} {{\n"
                 
                 # dynamically adds fields existing in the signals to the struct
@@ -73,9 +70,14 @@ def json_to_header(json_data):
 
                 struct_signal += f"}} {struct_signal_name};\n"
                 struct_definitions.append(struct_signal)
+                
+                struct_msg += f"    struct {struct_signal_name} {signal_name};\n"
         
+            struct_msg += f"}} {struct_msg_name};\n\n"
+            struct_definitions.append(struct_msg)
+            
         print(struct_definitions)
-        header_content = "\n\n".join(struct_definitions)
+        header_content = "\n".join(struct_definitions)
         return header_content
             
 

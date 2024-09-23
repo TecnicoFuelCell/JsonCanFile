@@ -6,16 +6,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-// PedalCAN
-typedef struct pedal_voltage {
-    char* name;
-    uint8_t id;
-    uint8_t prio;
-} pedal_voltage;
-
-
-
-// pedal_voltage SIGNALS
+// Signal: pedal_voltage
 typedef struct pedal_voltage {
     uint8_t start;
     uint8_t length;
@@ -27,6 +18,15 @@ typedef struct pedal_voltage {
     char* type;
     char* byte_order;
 } pedal_voltage;
+
+// PedalCAN
+typedef struct pedal_voltage {
+    char* name;
+    uint8_t id;
+    uint8_t prio;
+    struct pedal_voltage pedal_voltage;
+} pedal_voltage;
+
 
 
 #endif // TEST2_H
