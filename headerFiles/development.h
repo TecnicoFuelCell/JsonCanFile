@@ -1,7 +1,7 @@
 // CAN System
 
-#ifndef MULTIPLESIGNALS_H
-#define MULTIPLESIGNALS_H
+#ifndef DEVELOPMENT_H
+#define DEVELOPMENT_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -22,21 +22,6 @@ typedef struct pedal_voltage {
 } pedal_voltage;
 
 
-// Signal: pedal_position
-typedef struct pedal_position {
-    char* name;
-    uint8_t start;
-    uint8_t length;
-    float scale;
-    float offset;
-    char* unit;
-    char* comment;
-    char* blablabla;
-    float min_value;
-    float max_value;
-} pedal_position;
-
-
 // pedal_mod Module
 typedef struct pedal_msg {
     char* name;
@@ -44,7 +29,6 @@ typedef struct pedal_msg {
     uint8_t prio;
     uint8_t dlc;
     pedal_voltage pedal_voltage;
-    pedal_position pedal_position;
 } pedal_msg;
 
 
@@ -66,19 +50,7 @@ static pedal_msg pedal_msg_instance = {
         .type = "unsigned",
         .byte_order = "little_endian",
     },
-    .pedal_position = {
-        .name = "posição do pedal",
-        .start = 9,
-        .length = 7,
-        .scale = 0.392,
-        .offset = 0.0,
-        .unit = "%",
-        .comment = "Position of the pedal (0 to 100%)",
-        .blablabla = "blablabla",
-        .min_value = 0.0,
-        .max_value = 100.0,
-    },
 };
 
 
-#endif // MULTIPLESIGNALS_H
+#endif // DEVELOPMENT_H
