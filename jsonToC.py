@@ -1,4 +1,5 @@
 import json, os, re
+import argparse
 
 ## -------------------- AUXILIARY FUNCTIONS -------------------- ##
 
@@ -136,9 +137,9 @@ def convert_json_to_header(input_json_file, output_header_file):
         header_file.write(header_content)
     print(f"Header file '{output_header_file}' has been created.")
 
-
-convert_json_to_header('jsonFiles/development.json', 'headerFiles/development.h')
-convert_json_to_header('jsonFiles/cleanTFC.json', 'headerFiles/cleanTFC.h')
-convert_json_to_header('jsonFiles/multipleSignals.json', 'headerFiles/multipleSignals.h')
-convert_json_to_header('jsonFiles/multipleMessages.json', 'headerFiles/multiple_messages.h')
-
+if __name__ == "__main__":
+    arg_parser = argparse.ArgumentParser(description='Converts JSON files to C header files')
+    arg_parser.add_argument('json_file', type=str, help='Path to the JSON file')
+    arg_parser.add_argument('header_file', type=str, help='Path to the header file')
+    args = arg_parser.parse_args()
+    convert_json_to_header(args.json_file, args.header_file)
