@@ -1,7 +1,7 @@
 // CAN System
 
-#ifndef CLEANTFC_H
-#define CLEANTFC_H
+#ifndef TEST_H
+#define TEST_H
 
 #include <stdio.h>
 #include <stdint.h>
@@ -511,4 +511,4 @@ static gps_data gps_data_instance = {
 };
 
 
-#endif // CLEANTFC_H
+#endif // TEST_H
