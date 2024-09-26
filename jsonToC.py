@@ -1,17 +1,19 @@
 import json, os, re
 
-def check_empty_dict(dictionary, key_name):
-    value = dictionary.get(key_name, {})
+## -------------------- AUXILIARY FUNCTIONS -------------------- ##
+
+def check_empty_dict(dictionary, key_name, default={}):
+    # checks if the key we're trying to get exists
+    # prints to console if it doesn't and defaults to default arg if provided
+    value = dictionary.get(key_name, default)
     if not value:
         print(f"[ERROR] Failed to retrieve data for '{key_name}'")
     return value
 
 
 def map_json_type_to_c(json_value):
-    # maps Python data types to C equivalents
+    # maps the variables in json to C data types
     if isinstance(json_value, int):
-        # for integers, checks the range to determine the best 
-        # # C data type (avoids using uint16 or uint32 if not needed)
         if 0 <= json_value <= 255:
             return "uint8_t"
         elif 0 <= json_value <= 65535:
@@ -32,7 +34,16 @@ def map_json_type_to_c(json_value):
         else:
             return "void*"
     else:
-        return "void*"  # default for unknown -- bit problematic if it reaches here
+        return "void*"
+
+
+def c_value_repr(value):
+    # simplification to represent any value 
+    # without worrying if it's a string
+    if isinstance(value, str):
+        return f'"{value}"'
+    else:
+        return str(value)
 
 
 def add_signal_struct(signal_name, signal_content):
@@ -43,48 +54,63 @@ def add_signal_struct(signal_name, signal_content):
         c_type = map_json_type_to_c(signal_field_value)
         struct_signal += f"    {c_type} {signal_field_name};\n"
     
-    struct_signal += f"}} {signal_name};\n"
+    struct_signal += f"}} {signal_name};\n\n"
+    
     return struct_signal
 
 
 def add_header_struct(module_name, msg_name, msg_content, signals):
     struct_msg = f"// {module_name} Module\n"
     struct_msg += f"typedef struct {msg_name} {{\n"
-    # adds every field that is not a struct
+    
     for field_name, field_value in msg_content.items():
         if field_name != 'signals':
             c_type = map_json_type_to_c(field_value)
             struct_msg += f"    {c_type} {field_name};\n"
-    # adds all signal structs to the message struct
-    for signal_name in signals:
-        struct_msg += f"    struct {signal_name} {signal_name};\n"
     
-    struct_msg += f"}} {msg_name};\n\n"
-    return struct_msg
+    for signal_name in signals:
+        struct_msg += f"    {signal_name} {signal_name};\n"
+    
+    struct_msg += f"}} {msg_name};\n\n\n"
+    
+    # generates the initialization for each message
+    msg_init = f"static {msg_name} {msg_name}_instance = {{\n"
+    for field_name, field_value in msg_content.items():
+        if field_name != "signals":
+            msg_init += f"    .{field_name} = {c_value_repr(field_value)},\n"
+        else:
+            for signal_name in signals:
+                msg_init += f"    .{signal_name} = {{\n"
+                for signal_field_name, signal_field_value in signals[signal_name].items():
+                    msg_init += f"        .{signal_field_name} = {c_value_repr(signal_field_value)},\n"
+                msg_init += "    },\n"
+    msg_init += "};\n"
+    
+    return struct_msg + msg_init
 
 
 def json_to_header(json_data):
     struct_definitions = []
     data = json.loads(json_data)
     modules = check_empty_dict(data, 'modules').items()
-    # the first for will just have pedal_mod, but if there is
-    # more than one module, this is useful
+    
     for module_name, module_content in modules:
-        # handles "messages" layer 
-        # -> exists in TFC.json, defaults to module_content if it doesn't exist
-        messages = module_content.get('messages', module_content)
+        # some json files (e.g. TFC.json) have an extra layer of "messages"
+        # if it doesn't exist, we simplify default to the previous content
+        messages = check_empty_dict(module_content, 'messages', module_content)
         for msg_name, msg_content in messages.items():
+            # appends all signal structs first
             signals = check_empty_dict(msg_content, 'signals')
             for signal_name, signal_content in signals.items():
-                # creates a new struct for every signal in "signals"
                 struct_signal = add_signal_struct(signal_name, signal_content)
                 struct_definitions.append(struct_signal)
-            # creates the message struct (with all signal structs)
+            # creates the message struct with all signals and remaining fields
             struct_msg = add_header_struct(module_name, msg_name, msg_content, signals)
-            struct_definitions.append(struct_msg)                       
+            struct_definitions.append(struct_msg)
+
     header_content = "\n".join(struct_definitions)
     return header_content
-            
+
 
 def convert_json_to_header(input_json_file, output_header_file):
     with open(input_json_file, 'r') as json_file:
@@ -111,7 +137,7 @@ def convert_json_to_header(input_json_file, output_header_file):
     print(f"Header file '{output_header_file}' has been created.")
 
 
-convert_json_to_header('jsonFiles/development.json', 'headerFiles/test.h')
+convert_json_to_header('jsonFiles/development.json', 'headerFiles/development.h')
 convert_json_to_header('jsonFiles/cleanTFC.json', 'headerFiles/cleanTFC.h')
 convert_json_to_header('jsonFiles/multipleSignals.json', 'headerFiles/multipleSignals.h')
 convert_json_to_header('jsonFiles/multipleMessages.json', 'headerFiles/multiple_messages.h')
