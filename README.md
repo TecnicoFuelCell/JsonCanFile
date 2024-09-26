@@ -7,7 +7,7 @@ python jsonToC.py <json_file_location> <output_file_location>
 
 Example:
 ```bash
-python jsonToC.py jsons/test.json output/test.h
+python jsonToC.py jsonFiles/development.json development.h
 ```
 
 This creates a simple header file with the message structures and all the 
