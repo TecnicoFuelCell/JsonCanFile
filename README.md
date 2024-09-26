@@ -2,12 +2,12 @@
 
 ## How to Use
 ```bash
-python jsonToC.py <json_file_location> <output_file_location>
+python3 jsonToC.py <json_file_location> <output_file_location>
 ```
 
 Example:
 ```bash
-python jsonToC.py jsonFiles/development.json development.h
+python3 jsonToC.py jsonFiles/development.json development.h
 ```
 
 This creates a simple header file with the message structures and all the 
