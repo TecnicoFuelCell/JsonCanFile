@@ -47,46 +47,40 @@ def c_value_repr(value):
         return str(value)
 
 
-def add_signal_struct(signal_name, signal_content):
-    struct_signal = f"// Signal: {signal_name}\n"
-    struct_signal += f"typedef struct {signal_name} {{\n"
-    
-    for signal_field_name, signal_field_value in signal_content.items():
-        c_type = map_json_type_to_c(signal_field_value)
-        struct_signal += f"    {c_type} {signal_field_name};\n"
-    
-    struct_signal += f"}} {signal_name};\n\n"
-    
-    return struct_signal
-
-
 def add_header_struct(module_name, msg_name, msg_content, signals):
     struct_msg = f"// {module_name} Module\n"
     struct_msg += f"typedef struct {msg_name} {{\n"
-    
+
+    # generates every field for the message that isn't a signal
     for field_name, field_value in msg_content.items():
         if field_name != 'signals':
             c_type = map_json_type_to_c(field_value)
             struct_msg += f"    {c_type} {field_name};\n"
-    
-    for signal_name in signals:
-        struct_msg += f"    {signal_name} {signal_name};\n"
-    
+
+    # declares every signal structure inside the message structure (nested)
+    for signal_name, signal_content in signals.items():
+        struct_msg += f"    struct {{\n"
+        for signal_field_name, signal_field_value in signal_content.items():
+            c_type = map_json_type_to_c(signal_field_value)
+            struct_msg += f"        {c_type} {signal_field_name};\n"
+        struct_msg += f"    }} {signal_name};\n"
+
     struct_msg += f"}} {msg_name};\n\n\n"
-    
-    # generates the initialization for each message
+
+    # generates a static initialization for the full message
     msg_init = f"static {msg_name} {msg_name}_instance = {{\n"
     for field_name, field_value in msg_content.items():
         if field_name != "signals":
             msg_init += f"    .{field_name} = {c_value_repr(field_value)},\n"
         else:
-            for signal_name in signals:
+            # initializes signals
+            for signal_name, signal_content in signals.items():
                 msg_init += f"    .{signal_name} = {{\n"
-                for signal_field_name, signal_field_value in signals[signal_name].items():
+                for signal_field_name, signal_field_value in signal_content.items():
                     msg_init += f"        .{signal_field_name} = {c_value_repr(signal_field_value)},\n"
                 msg_init += "    },\n"
     msg_init += "};\n"
-    
+
     return struct_msg + msg_init
 
 
@@ -102,10 +96,6 @@ def json_to_header(json_data):
         for msg_name, msg_content in messages.items():
             # appends all signal structs first
             signals = check_empty_dict(msg_content, 'signals')
-            for signal_name, signal_content in signals.items():
-                struct_signal = add_signal_struct(signal_name, signal_content)
-                struct_definitions.append(struct_signal)
-            # creates the message struct with all signals and remaining fields
             struct_msg = add_header_struct(module_name, msg_name, msg_content, signals)
             struct_definitions.append(struct_msg)
 

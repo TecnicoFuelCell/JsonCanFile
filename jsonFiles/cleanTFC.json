@@ -222,7 +222,7 @@
                     "id": 5,
                     "prio":1,
                     "signals": {
-                        "unknown_signal2": {
+                        "unknown_signal": {
                             "start": 0,
                             "length": 32,
                             "scale": 1.0,

@@ -28,7 +28,7 @@
                 "prio": 2,
                 "dlc": 9,
                 "signals": {
-                    "signal1": {
+                    "pedal_voltage": {
                         "name": "blabla",
                         "start": 0,
                         "length": 9,
