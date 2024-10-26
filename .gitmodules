@@ -1,0 +1,3 @@
+[submodule "CanIndex"]
+	path = CanIndex
+	url = https://github.com/TecnicoFuelCell/CanIndex.git
